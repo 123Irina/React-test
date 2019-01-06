@@ -3,9 +3,6 @@ import {Link} from "react-router-dom";
 
 
 class Home extends Component {
-    constructor(props) {
-        super(props);
-    }
     render() {
         if (this.props.authorized) {
         return <div className='container'>

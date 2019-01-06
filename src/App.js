@@ -1,28 +1,36 @@
 import React, { Component } from 'react';
 import {Router, Route} from "react-router-dom";
 import createBrowserHistory from "history/createBrowserHistory";
-import News from "./News";
-import Profile from "./Profile";
-import Login from "./Login";
-import Home from "./Home";
-import Menu from "./Menu"
+import News from "./components/News";
+import Profile from "./components/Profile";
+import Login from "./components/Login";
+import Home from "./components/Home";
+import Menu from "./components/Menu"
 
 const history = createBrowserHistory();
 class App extends Component {
     constructor (props) {
         super (props);
-        this.state = {authorized: false};
+        this.state = {
+            authorized: false,
+            id: ''
+        };
         this.changeState=this.changeState.bind(this);
+        this.changeStateId=this.changeStateId.bind(this);
         this.exit=this.exit.bind(this)
     }
     componentWillMount() {
         if ( localStorage.getItem("authorized") === 'true' ) {
-            this.setState({authorized: true});
+            this.setState({authorized: true,
+            id: 1});
         }
     }
     changeState() {
         this.setState({authorized: true});
         localStorage.setItem( 'authorized', 'true' );
+    }
+    changeStateId(id) {
+        this.setState({id: id});
     }
     exit (){
         this.setState({authorized: false} );
@@ -45,12 +53,14 @@ class App extends Component {
                         <Login{...props}
                               authorized={this.state.authorized}
                               changeState={this.changeState}
+                              changeStateId={this.changeStateId}
                         />
                     )}/>
                     <Route exact path='/news' component={News}/>
                     <Route exact path='/profile' render={(props) => (
                         <Profile {...props}
                               authorized={this.state.authorized}
+                                 id={this.state.id}
                         />
                     )}/>
                 </div>
@@ -62,11 +72,3 @@ class App extends Component {
 }
 
 export default App;
-//
-// / - главная
-//
-// /login - страница ввода логина и пароля
-//
-// /news - страница с новостями (любая однотипная информация)
-//
-// /profile - страница с произвольным текстом, недоступная без авторизации

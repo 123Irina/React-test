@@ -1,12 +1,16 @@
 import React, {Component} from 'react';
 import {Redirect} from "react-router-dom";
+import axios from "axios";
+import API from "../constants/api";
+import Errors from "../constants/errors";
 
 class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            error: ''
         };
 
         this.onLoginChange = this.onLoginChange.bind(this);
@@ -16,12 +20,21 @@ class Login extends Component {
     };
     onSubmit(event){
         event.preventDefault();
-        if (this.state.email === 'max@test.com' && this.state.password === '12345') {
-            document.querySelector('.error_message').innerHTML = '';
-            this.props.changeState({authorized: true} );
-        } else {
-            document.querySelector('.error_message').innerHTML = 'неверное имя пользователя или пароль';
-        }
+        const email = this.state.email;
+        const password = this.state.password;
+        axios.post(`${API}/validate`, {email, password})
+            .then(({ data }) => {
+                if (data.status === "err") {
+                    this.setState({
+                        error: Errors[data.message],
+                        password: ''
+                    });
+
+                } else {
+                    this.props.changeState({authorized: true} );
+                    this.props.changeStateId(data.data.id);
+                }
+            });
     };
     onPasswordChange(event){
         this.setState({password: event.target.value});
@@ -41,7 +54,7 @@ class Login extends Component {
                                                      onChange={this.onPasswordChange}/></label></span>
                         <div>
                             <button className='btn_green' onClick={this.onSubmit}>Ok</button>
-                            <span className='error_message'/>
+                            <span className='error_message'>{this.state.error}</span>
                         </div>
                     </form>
                 </div>
@@ -51,12 +64,11 @@ class Login extends Component {
         }
     }
     render() {
-        {
-           return this.content()
-        }
+        return this.content()
     }
 }
 
+export default Login;
 
-export default Login
+
 
