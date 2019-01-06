@@ -31,7 +31,7 @@ class Login extends Component {
                     });
 
                 } else {
-                    this.props.changeState({authorized: true} );
+                    // this.props.changeState({authorized: true} );
                     this.props.changeStateId(data.data.id);
                 }
             });

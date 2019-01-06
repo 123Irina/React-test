@@ -15,7 +15,6 @@ class App extends Component {
             authorized: false,
             id: ''
         };
-        this.changeState=this.changeState.bind(this);
         this.changeStateId=this.changeStateId.bind(this);
         this.exit=this.exit.bind(this)
     }
@@ -25,12 +24,11 @@ class App extends Component {
             id: 1});
         }
     }
-    changeState() {
-        this.setState({authorized: true});
-        localStorage.setItem( 'authorized', 'true' );
-    }
     changeStateId(id) {
-        this.setState({id: id});
+        this.setState({
+            authorized: true,
+            id: id});
+        localStorage.setItem( 'authorized', 'true' );
     }
     exit (){
         this.setState({authorized: false} );
@@ -52,7 +50,6 @@ class App extends Component {
                     <Route exact path='/login' render={(props) => (
                         <Login{...props}
                               authorized={this.state.authorized}
-                              changeState={this.changeState}
                               changeStateId={this.changeStateId}
                         />
                     )}/>
